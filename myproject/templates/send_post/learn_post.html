@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}发布学习资料{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/learn_post.css' %}">
+<div class="post_box">
+    <h2 class="page-title">发布学习资料</h2>
+    {% if request.session.is_authenticated %}
+    <form method="post" action="{% url 'send_post:create_learn_post' %}" class="post-form"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="form">
+            <label for="title" class="label1">标题</label>
+            {{ form.title }}
+            {% if form.title.errors %}
+            <div class="error-message">{{ form.title.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form">
+            <label for="content" class="label2">内容描述</label>
+            {{ form.content }}
+            {% if form.content.errors %}
+            <div class="error-message">{{ form.content.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form">
+            <label for="subject" class="label3">科目</label>
+            {{ form.subject }}
+            {% if form.subject.errors %}
+            <div class="error-message">{{ form.subject.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form">
+            <label for="material_type" class="label4">资料类型</label>
+            {{ form.material_type }}
+            {% if form.material_type.errors %}
+            <div class="error-message">{{ form.material_type.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form">
+            <label for="image" class="label5">封面图片</label>
+            {{ form.image }}
+            <span class="help-text">建议上传一张与资料相关的封面图片（可选）</span>
+            {% if form.image.errors %}
+            <div class="error-message">{{ form.image.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="form">
+            <label for="file_url" class="label6">资料链接</label>
+            {{ form.file_url }}
+            {% if form.file_url.errors %}
+            <div class="error-message">{{ form.file_url.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <div class="post_price">
+            <label for="price" class="label7">价格</label>
+            {{ form.price }}
+            {% if form.price.errors %}
+            <div class="error-message">{{ form.price.errors.0 }}</div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="send">发布学习资料</button>
+    </form>
+    {% else %}
+    <div class="login-notice">
+        <p>请先<a href="{% url 'user_center:login' %}?next={{ request.path }}">登录</a>后再发布学习资料</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .post_box {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-title {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+
+    .form {
+        margin-bottom: 20px;
+    }
+
+    .form label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    .post_title,
+    .post_content,
+    .subject,
+    .material_type,
+    .file_url,
+    .price {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+    }
+
+    .post_content {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .help-text {
+        display: block;
+        margin-top: 4px;
+        font-size: 14px;
+        color: #666;
+    }
+
+    .error-message {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    .messages {
+        margin-bottom: 20px;
+    }
+
+    .alert {
+        padding: 12px;
+        border-radius: 4px;
+        margin-bottom: 10px;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+
+    .alert-error {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+
+    .post_price {
+        margin-bottom: 20px;
+    }
+
+    .send {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .send:hover {
+        background-color: #0056b3;
+    }
+
+    .login-notice {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .login-notice a {
+        color: #007bff;
+        text-decoration: none;
+    }
+
+    .login-notice a:hover {
+        text-decoration: underline;
+    }
+</style>
+{% endblock %}

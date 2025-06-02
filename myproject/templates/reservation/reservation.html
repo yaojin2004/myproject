@@ -1,0 +1,310 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load square_filters %}
+
+{% block title %}辅导预约{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/square_layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/post_detail.css' %}">
+<style>
+  .search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    max-width: 600px;
+    margin: 0 auto 30px;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e1e8ef;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+
+  .search-btn {
+    padding: 12px 25px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .search-btn:hover {
+    background-color: #2980b9;
+  }
+
+  .clear-search {
+    padding: 12px 20px;
+    background-color: #e74c3c;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  .clear-search:hover {
+    background-color: #c0392b;
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .post-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+    padding: 15px;
+  }
+
+  .post-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .post-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .author-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .post-meta {
+    flex-grow: 1;
+  }
+
+  .author-name {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .post-time {
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  .post-title {
+    font-size: 1.2em;
+    margin: 10px 0;
+    color: #333;
+  }
+
+  .post-content {
+    color: #666;
+    margin-bottom: 15px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+  }
+
+  .post-info {
+    padding: 0 15px 15px;
+  }
+
+  .post-info-item {
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .post-info-label {
+    color: #666;
+    font-size: 14px;
+  }
+
+  .post-status {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+
+  .status-open {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+  }
+
+  .status-full {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  .status-closed {
+    background-color: #f5f5f5;
+    color: #616161;
+  }
+
+  .post-price {
+    color: #f44336;
+    font-weight: bold;
+  }
+
+  .view-detail {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #1976d2;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  .view-detail:hover {
+    background-color: #1565c0;
+  }
+
+  .price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #f57c00;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 30px;
+  }
+
+  .page-link {
+    padding: 8px 16px;
+    border: 1px solid #e1e8ef;
+    border-radius: 6px;
+    color: #3498db;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    min-width: 40px;
+    text-align: center;
+    font-size: 14px;
+  }
+
+  .page-link:hover {
+    background-color: #f8f9fa;
+    border-color: #3498db;
+  }
+
+  .page-link.active {
+    background-color: #3498db;
+    color: white;
+    border-color: #3498db;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="square-container">
+  <form method="GET" class="search-form">
+    <input type="text" name="search" placeholder="搜索预约..." value="{{ request.GET.search|default:'' }}"
+      class="search-input">
+    <button type="submit" class="search-btn">搜索</button>
+    {% if request.GET.search %}
+    <a href="{% url 'reservation:reservation' %}" class="clear-search">清除搜索</a>
+    {% endif %}
+  </form>
+
+  <div class="posts-grid">
+    {% for post in posts %}
+    <div class="post-card">
+      <div class="post-image">
+        {% if post.cover_image %}
+        <img src="{{ post.cover_image.url }}" alt="{{ post.title }}">
+        <!-- Debug info -->
+        <div style="display: none;">Image path: {{ post.cover_image.path }}</div>
+        {% else %}
+        <img src="{% static 'images/01.jpg' %}" alt="默认预约图片">
+        <!-- Debug info -->
+        <div style="display: none;">Using default reservation image</div>
+        {% endif %}
+      </div>
+      <h3 class="post-title">{{ post.title|truncatechars:20 }}</h3>
+      <div class="post-info">
+        <div class="post-info-item">
+          <span class="post-info-label">作者：</span>
+          <span>{{ post.author.username }}</span>
+        </div>
+        <div class="post-info-item">
+          <span class="post-info-label">状态：</span>
+          {% if post.status == 'open' %}
+          <span class="post-status status-open">开放中</span>
+          {% elif post.status == 'full' %}
+          <span class="post-status status-full">已满</span>
+          {% else %}
+          <span class="post-status status-closed">已关闭</span>
+          {% endif %}
+        </div>
+        <div class="post-info-item">
+          <span class="post-info-label">价格：</span>
+          <span class="post-price">￥{{ post.price }}</span>
+        </div>
+      </div>
+      <a href="{% url 'square:post_detail' post_type='reservationpost' post_id=post.id %}" class="view-detail">
+        查看详情
+      </a>
+    </div>
+    {% empty %}
+    <div class="no-posts">
+      <p>暂无预约帖子</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if posts.has_other_pages %}
+  <nav class="pagination">
+    {% if posts.has_previous %}
+    <a href="?page={{ posts.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+      class="page-link">&laquo;</a>
+    {% endif %}
+
+    {% for number in page_numbers %}
+    {% if number == current_page %}
+    <span class="page-link active">{{ number }}</span>
+    {% else %}
+    <a href="?page={{ number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+      class="page-link">{{ number }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if posts.has_next %}
+    <a href="?page={{ posts.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}"
+      class="page-link">&raquo;</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

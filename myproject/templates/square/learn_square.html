@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load square_filters %}
+
+{% block title %}学习资料 - 最新帖子{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/square_layout.css' %}">
+<link rel="stylesheet" href="{% static 'css/post_detail.css' %}">
+
+<div class="square-container">
+  <div class="posts-grid">
+    {% for post in posts %}
+    <div class="post-card">
+      <div class="post-image">
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+        {% else %}
+        <img src="{% static 'images/02.jpg' %}" alt="默认学习资料图片">
+        {% endif %}
+      </div>
+      <h3 class="post-title">{{ post.title|truncatechars:20 }}</h3>
+      <div class="post-info">
+        <div class="post-info-item">
+          <span class="post-info-label">作者：</span>
+          <span>{{ post.author.username }}</span>
+        </div>
+        <div class="post-info-item">
+          <span class="post-info-label">科目：</span>
+          <span>{{ post.subject }}</span>
+        </div>
+        <div class="post-info-item">
+          <span class="post-info-label">价格：</span>
+          <span class="post-price">￥{{ post.price }}</span>
+        </div>
+      </div>
+      <a href="{% url 'square:post_detail' post_type='learnpost' post_id=post.id %}" class="view-detail">
+        查看详情
+      </a>
+    </div>
+    {% empty %}
+    <div class="no-posts">
+      <p>暂无学习资料</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if posts.has_other_pages %}
+  <div class="pagination">
+    {% if posts.has_previous %}
+    <a href="?page={{ posts.previous_page_number }}" class="page-link">&laquo; 上一页</a>
+    {% endif %}
+
+    {% for num in posts.paginator.page_range %}
+    {% if posts.number == num %}
+    <span class="page-link active">{{ num }}</span>
+    {% else %}
+    <a href="?page={{ num }}" class="page-link">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+
+    {% if posts.has_next %}
+    <a href="?page={{ posts.next_page_number }}" class="page-link">下一页 &raquo;</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

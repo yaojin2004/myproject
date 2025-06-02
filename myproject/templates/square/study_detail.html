@@ -1,0 +1,331 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - 学习资料{% endblock %}
+
+{% block content %}
+{{ post.id|json_script:"post-id" }}
+<link rel="stylesheet" href="{% static 'css/post_detail.css' %}">
+
+<div class="post-detail-container">
+  <div class="post-header">
+    <a href="{% url 'square:index' %}" class="back-link">
+      <i class="fas fa-arrow-left"></i> 返回广场
+    </a>
+    <div class="post-type-badge study">学习资料</div>
+    <h1 class="post-title">{{ post.title }}</h1>
+  </div>
+
+  <div class="post-content">
+    {% if post.image %}
+    <div class="post-image">
+      <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    </div>
+    {% endif %}
+
+    <div class="post-info-section">
+      <div class="post-info-item">
+        <span class="info-label">发布者：</span>
+        <span class="info-value">{{ post.author.username }}</span>
+      </div>
+      <div class="post-info-item">
+        <span class="info-label">科目：</span>
+        <span class="info-value">{{ post.subject }}</span>
+      </div>
+      <div class="post-info-item">
+        <span class="info-label">资料类型：</span>
+        <span class="info-value">{{ post.get_material_type_display }}</span>
+      </div>
+      <div class="post-info-item">
+        <span class="info-label">价格：</span>
+        <span class="info-value price">￥{{ post.price }}</span>
+      </div>
+    </div>
+
+    <div class="post-description">
+      <h2>资料描述</h2>
+      {{ post.content|linebreaks }}
+    </div>
+
+    {% if post.file %}
+    {% if has_purchased %}
+    <div class="file-section">
+      <h2>资料下载</h2>
+      <div class="file-info">
+        <i class="fas fa-file"></i>
+        <span class="file-name">{{ post.file.name|cut:"study_materials/" }}</span>
+        <a href="{% url 'square:download_file' post.id %}" class="action-button download">
+          <i class="fas fa-download"></i> 下载资料
+        </a>
+      </div>
+    </div>
+    {% endif %}
+    {% endif %}
+
+    {% if post.file_url and has_purchased %}
+    <div class="file-section">
+      <h2>资料链接</h2>
+      <div class="file-info">
+        <i class="fas fa-link"></i>
+        <div class="url-copy-container">
+          <input type="text" value="{{ post.file_url }}" id="fileUrl" readonly class="file-url-input">
+          <button onclick="copyFileUrl()" class="copy-button">
+            <i class="fas fa-copy"></i> 复制链接
+          </button>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="action-section">
+      {% if not has_purchased %}
+      {% if user.is_authenticated %}
+      <button class="action-button purchase" onclick="purchaseStudyMaterial({{ post.id }})">购买资料</button>
+      {% else %}
+      <a href="{% url 'user_center:login' %}?next={{ request.path }}" class="action-button purchase">登录后购买</a>
+      {% endif %}
+      {% else %}
+      <div class="purchase-status">已购买</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- 评论区 -->
+<div class="comments-section">
+  <h2>评论区</h2>
+  {% if has_purchased %}
+  <div class="comment-form">
+    <form id="commentForm" onsubmit="submitComment(event)">
+      <textarea name="content" placeholder="请输入您的评论..." required></textarea>
+      <button type="submit" class="action-button">发表评论</button>
+    </form>
+  </div>
+  {% else %}
+  <div class="comment-login-prompt">
+    购买后即可发表评论
+  </div>
+  {% endif %}
+
+  <div class="comments-list">
+    {% for comment in comments %}
+    <div class="comment-item">
+      <div class="comment-header">
+        <span class="comment-author">{{ comment.user.username }}</span>
+        <span class="comment-time">{{ comment.created_time|date:"Y-m-d H:i" }}</span>
+      </div>
+      <div class="comment-content">
+        {{ comment.content|linebreaks }}
+      </div>
+    </div>
+    {% empty %}
+    <div class="no-comments">
+      暂无评论
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .comments-section {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .comments-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .comment-form {
+    margin-bottom: 30px;
+  }
+
+  .comment-form textarea {
+    width: 100%;
+    min-height: 100px;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    resize: vertical;
+  }
+
+  .comment-login-prompt {
+    text-align: center;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    color: #666;
+  }
+
+  .comment-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 15px;
+  }
+
+  .comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .comment-author {
+    font-weight: bold;
+    color: #333;
+  }
+
+  .comment-time {
+    color: #999;
+    font-size: 0.9em;
+  }
+
+  .comment-content {
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .no-comments {
+    text-align: center;
+    color: #999;
+    padding: 20px;
+  }
+
+  .url-copy-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    margin-left: 10px;
+  }
+
+  .file-url-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+    font-size: 14px;
+    background-color: #f8f9fa;
+    cursor: text;
+  }
+
+  .copy-button {
+    padding: 8px 16px;
+    background-color: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background-color 0.2s;
+  }
+
+  .copy-button:hover {
+    background-color: #1976D2;
+  }
+
+  .copy-button i {
+    font-size: 14px;
+  }
+</style>
+
+<script>
+  // 获取帖子ID
+  const postId = JSON.parse(document.getElementById('post-id').textContent);
+  console.log('Post ID:', postId);
+
+  function purchaseStudyMaterial(postId) {
+    if (!confirm('确认购买这份资料吗？')) {
+      return;
+    }
+
+    fetch(`/square/purchase/${postId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          alert(data.message);
+          window.location.href = data.redirect_url;
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(error => {
+        alert('购买失败，请稍后重试');
+      });
+  }
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  function submitComment(event) {
+    event.preventDefault();
+    const form = event.target;
+    const content = form.content.value;
+
+    fetch(`/square/comment/${postId}/`, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken'),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        content: content
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert(data.message);
+        }
+      })
+      .catch(error => {
+        alert('评论发送失败，请稍后重试');
+      });
+  }
+
+  function copyFileUrl() {
+    const urlInput = document.getElementById('fileUrl');
+    urlInput.select();
+    document.execCommand('copy');
+
+    // 显示复制成功提示
+    const copyButton = document.querySelector('.copy-button');
+    const originalText = copyButton.innerHTML;
+    copyButton.innerHTML = '<i class="fas fa-check"></i> 已复制';
+    copyButton.style.backgroundColor = '#4CAF50';
+
+    setTimeout(() => {
+      copyButton.innerHTML = originalText;
+      copyButton.style.backgroundColor = '#2196F3';
+    }, 2000);
+  }
+</script>
+{% endblock %}

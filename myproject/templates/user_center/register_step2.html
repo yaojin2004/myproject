@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-center">完善用户信息</h3>
+        </div>
+        <div class="card-body">
+          {% if messages %}
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+          {% endfor %}
+          {% endif %}
+
+          <form id="registerForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="test_mode" value="true">
+
+            <div class="form-group mb-3">
+              <label for="username">用户名</label>
+              <input type="text" class="form-control" id="username" name="username" required>
+              <div class="invalid-feedback" id="username-error"></div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="password">密码</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+              <div class="invalid-feedback" id="password-error"></div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="password2">确认密码</label>
+              <input type="password" class="form-control" id="password2" name="password2" required>
+              <div class="invalid-feedback" id="password2-error"></div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="phone">手机号</label>
+              <input type="tel" class="form-control" id="phone" name="phone" pattern="[0-9]{11}" required>
+              <div class="invalid-feedback" id="phone-error"></div>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="sex">性别</label>
+              <select class="form-control" id="sex" name="sex">
+                <option value="male">男</option>
+                <option value="female">女</option>
+              </select>
+            </div>
+
+            <div class="form-group mb-3">
+              <label for="head">头像</label>
+              <input type="file" class="form-control" id="head" name="head" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">注册</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('registerForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    // 清除之前的错误信息
+    document.querySelectorAll('.invalid-feedback').forEach(el => {
+      el.style.display = 'none';
+      el.textContent = '';
+    });
+
+    const formData = new FormData(this);
+
+    fetch(window.location.href, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+      .then(response => {
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          return response.json();
+        }
+        // 如果不是JSON响应，可能是重定向
+        if (response.redirected) {
+          window.location.href = response.url;
+          return null;
+        }
+        throw new Error('服务器返回了非JSON格式的数据');
+      })
+      .then(data => {
+        if (!data) return; // 如果是重定向，data为null，直接返回
+
+        if (data.status === 'success') {
+          alert(data.message || '注册成功！');
+          window.location.href = data.redirect_url || '/user_center/login/';
+        } else if (data.status === 'error') {
+          if (data.errors) {
+            // 显示具体的字段错误
+            Object.keys(data.errors).forEach(field => {
+              const errorElement = document.getElementById(`${field}-error`);
+              if (errorElement) {
+                errorElement.textContent = data.errors[field];
+                errorElement.style.display = 'block';
+              }
+            });
+          } else {
+            // 显示一般错误消息
+            alert(data.message || '注册失败，请检查输入信息！');
+          }
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('注册过程中发生错误，请稍后重试！');
+      });
+  });
+</script>
+
+<style>
+  .invalid-feedback {
+    display: none;
+    color: #dc3545;
+    font-size: 80%;
+    margin-top: 0.25rem;
+  }
+
+  .card {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .btn-block {
+    width: 100%;
+  }
+</style>
+{% endblock %}
