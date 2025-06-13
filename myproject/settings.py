@@ -88,9 +88,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
         'NAME': 'myproject',
-        'USER': 'myproject',
+        'USER': 'root',
         'PASSWORD':'(Aa)Yjdsg251066',
-        'HOST':'127.0.0.1',
+        'HOST':'8.133.253.200',
         'PORT':'3306'
     }
 }
