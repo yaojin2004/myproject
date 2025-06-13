@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}发布帖子{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/send_post.css' %}">
+
+<div class="form">
+    <label for="post_type" class="label1">请选择发布帖子类型:</label>
+    <select id="post_type" name="post_type" class="post_type" required>
+        <option value="">请选择</option>
+        <option value="appointment">预约辅导</option>
+        <option value="materials">学习资料</option>
+    </select>
+</div>
+<img src="{% static 'images/phone.png' %}" alt="Background Image" class="background-image">
+<script>
+    // 监听下拉菜单的变化事件
+    document.getElementById('post_type').addEventListener('change', function () {
+        // 获取选中的值
+        const selectedValue = this.value;
+
+        // 根据选中的值决定跳转行为
+        if (selectedValue === 'appointment') {
+            window.location.href = '/send_post/reservation/';
+        } else if (selectedValue === 'materials') {
+            window.location.href = '/send_post/learn_post/';
+        }
+    });
+</script>
+{% endblock %}

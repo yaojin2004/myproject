@@ -1,0 +1,130 @@
+INFO 2025-05-31 13:13:38,384 autoreload 9348 7192 Watching for file changes with StatReloader
+INFO 2025-05-31 13:13:46,838 views 9348 4868 Found user: yaojin (ID: 1)
+INFO 2025-05-31 13:13:47,127 views 9348 4868 Saving post with author: yaojin (ID: 1)
+DEBUG 2025-05-31 13:13:59,758 views 9348 4868 开始处理购买请求 - 帖子ID: 4
+DEBUG 2025-05-31 13:13:59,803 views 9348 4868 找到学习资料帖子 - 标题: 学习资料
+DEBUG 2025-05-31 13:13:59,817 views 9348 4868 创建购买记录成功 - 用户ID: 1, 帖子ID: 4
+DEBUG 2025-05-31 13:13:59,829 views 9348 4868 帖子没有附带文件
+DEBUG 2025-05-31 13:13:59,829 views 9348 4868 返回响应数据: {'status': 'success', 'message': '购买成功！', 'file_info': None}
+INFO 2025-05-31 13:14:57,733 autoreload 9348 7192 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:14:58,534 autoreload 7524 7072 Watching for file changes with StatReloader
+INFO 2025-05-31 13:14:59,958 autoreload 7524 7072 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:15:00,682 autoreload 3468 13608 Watching for file changes with StatReloader
+INFO 2025-05-31 13:16:31,420 views 3468 4412 Found user: yaojin (ID: 1)
+INFO 2025-05-31 13:16:31,662 views 3468 4412 Saving post with author: yaojin (ID: 1)
+DEBUG 2025-05-31 13:16:40,745 views 3468 4412 开始处理购买请求 - 帖子ID: 5
+DEBUG 2025-05-31 13:16:40,752 views 3468 4412 找到学习资料帖子 - 标题: 学习资料测试
+DEBUG 2025-05-31 13:16:40,816 views 3468 4412 创建购买记录成功 - 用户ID: 1, 帖子ID: 5
+DEBUG 2025-05-31 13:16:40,816 views 3468 4412 帖子没有附带文件
+DEBUG 2025-05-31 13:16:40,818 views 3468 4412 返回响应数据: {'status': 'success', 'message': '购买成功！', 'file_info': None}
+INFO 2025-05-31 13:19:02,274 autoreload 3468 13608 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:19:03,154 autoreload 10284 12644 Watching for file changes with StatReloader
+INFO 2025-05-31 13:19:04,571 autoreload 10284 12644 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:19:05,198 autoreload 3984 16408 Watching for file changes with StatReloader
+INFO 2025-05-31 13:21:38,947 views 3984 8676 Found user: yaojin (ID: 1)
+INFO 2025-05-31 13:21:39,205 views 3984 8676 Saving post with author: yaojin (ID: 1)
+DEBUG 2025-05-31 13:21:45,015 views 3984 8676 开始处理购买请求 - 帖子ID: 6
+DEBUG 2025-05-31 13:21:45,029 views 3984 8676 找到学习资料帖子 - 标题: 上外bb
+DEBUG 2025-05-31 13:21:45,047 views 3984 8676 创建购买记录成功 - 用户ID: 1, 帖子ID: 6
+DEBUG 2025-05-31 13:21:45,047 views 3984 8676 资料链接准备完成 - 链接: https://www.baidu.com/baidu?ie=utf-8&wd=%E4%B8%8A%E5%A4%96bb
+DEBUG 2025-05-31 13:21:45,058 views 3984 8676 返回响应数据: {'status': 'success', 'message': '购买成功！', 'file_info': {'name': None, 'download_url': None, 'original_url': 'https://www.baidu.com/baidu?ie=utf-8&wd=%E4%B8%8A%E5%A4%96bb'}}
+INFO 2025-05-31 13:25:35,663 autoreload 3984 16408 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:25:36,498 autoreload 12496 7612 Watching for file changes with StatReloader
+ERROR 2025-05-31 13:27:46,154 views 12496 15088 评论发表失败: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+ERROR 2025-05-31 13:27:46,193 views 12496 15088 错误详情: Traceback (most recent call last):
+  File "D:\pythonProject\django_project\myproject\square\views.py", line 432, in post_comment
+    comment = StudyMaterialComment.objects.create(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\query.py", line 677, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\base.py", line 543, in __init__
+    _setattr(self, field.name, rel_obj)
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 287, in __set__
+    raise ValueError(
+ValueError: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+
+ERROR 2025-05-31 13:27:50,779 views 12496 15088 评论发表失败: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+ERROR 2025-05-31 13:27:50,781 views 12496 15088 错误详情: Traceback (most recent call last):
+  File "D:\pythonProject\django_project\myproject\square\views.py", line 432, in post_comment
+    comment = StudyMaterialComment.objects.create(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\query.py", line 677, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\base.py", line 543, in __init__
+    _setattr(self, field.name, rel_obj)
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 287, in __set__
+    raise ValueError(
+ValueError: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+
+ERROR 2025-05-31 13:28:03,929 views 12496 17748 评论发表失败: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+ERROR 2025-05-31 13:28:03,932 views 12496 17748 错误详情: Traceback (most recent call last):
+  File "D:\pythonProject\django_project\myproject\square\views.py", line 432, in post_comment
+    comment = StudyMaterialComment.objects.create(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\query.py", line 677, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\base.py", line 543, in __init__
+    _setattr(self, field.name, rel_obj)
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 287, in __set__
+    raise ValueError(
+ValueError: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+
+INFO 2025-05-31 13:29:00,021 autoreload 12496 7612 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:29:00,679 autoreload 12256 9220 Watching for file changes with StatReloader
+INFO 2025-05-31 13:29:02,098 autoreload 12256 9220 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:29:02,740 autoreload 18480 5796 Watching for file changes with StatReloader
+INFO 2025-05-31 13:29:17,701 views 18480 1552 开始处理评论请求 - 帖子ID: 6
+INFO 2025-05-31 13:29:17,712 views 18480 1552 评论用户: yaojin (ID: 1)
+INFO 2025-05-31 13:29:17,712 views 18480 1552 评论帖子: 上外bb (ID: 6)
+INFO 2025-05-31 13:29:17,712 views 18480 1552 评论内容: good...
+ERROR 2025-05-31 13:29:17,712 views 18480 1552 评论创建失败: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+ERROR 2025-05-31 13:29:17,712 views 18480 1552 错误详情: Traceback (most recent call last):
+  File "D:\pythonProject\django_project\myproject\square\views.py", line 451, in post_comment
+    comment = StudyMaterialComment.objects.create(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\query.py", line 677, in create
+    obj = self.model(**kwargs)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\base.py", line 543, in __init__
+    _setattr(self, field.name, rel_obj)
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\fields\related_descriptors.py", line 287, in __set__
+    raise ValueError(
+ValueError: Cannot assign "<User: yaojin>": "StudyMaterialComment.user" must be a "User" instance.
+
+INFO 2025-05-31 13:30:11,536 autoreload 18480 5796 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:30:12,303 autoreload 17216 4964 Watching for file changes with StatReloader
+INFO 2025-05-31 13:30:14,821 autoreload 17216 4964 D:\pythonProject\django_project\myproject\square\views.py changed, reloading.
+INFO 2025-05-31 13:30:15,394 autoreload 18084 11852 Watching for file changes with StatReloader
+ERROR 2025-05-31 13:30:52,903 log 18084 9320 Internal Server Error: /square/post/studymaterialpost/6/
+Traceback (most recent call last):
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\django_project\myproject\square\views.py", line 71, in post_detail
+    user = User.objects.get(id=request.session.get('user_id'))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\pythonProject\myproject\.venv\Lib\site-packages\django\db\models\query.py", line 649, in get
+    raise self.model.DoesNotExist(
+django.contrib.auth.models.User.DoesNotExist: User matching query does not exist.
+INFO 2025-05-31 13:31:08,717 autoreload 18084 11852 D:\pythonProject\django_project\myproject\myproject\settings.py changed, reloading.

@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}发布预约信息{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/reservation.css' %}">
+<div class="post_box">
+    <h2 class="page-title">发布预约信息</h2>
+    {% if request.session.is_authenticated %}
+    <form method="post" action="{% url 'reservation:create_reservation_post' %}" class="post-form" id="reservation-form"
+        enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form">
+            <label for="post_title" class="label1">标题</label>
+            <input type="text" id="post_title" name="title" class="post_title" placeholder="请输入预约服务标题" required>
+        </div>
+        <div class="form">
+            <label for="post_content" class="label2">服务描述</label>
+            <textarea id="post_content" name="content" class="post_content" placeholder="请详细描述预约服务的内容、要求等信息"
+                required></textarea>
+        </div>
+        <div class="form">
+            <label for="cover_image" class="label-image">封面图片</label>
+            <div class="image-upload-container">
+                <input type="file" id="cover_image" name="cover_image" class="cover_image" accept="image/*"
+                    onchange="previewImage(this)">
+                <div class="image-preview" id="imagePreview">
+                    <img id="preview" src="#" alt="预览图片" style="display: none; max-width: 100%; max-height: 200px;">
+                    <p class="upload-text">点击或拖拽上传图片</p>
+                </div>
+            </div>
+        </div>
+        <div class="form">
+            <label for="service_time" class="label3">服务时间</label>
+            <input type="text" id="service_time" name="service_time" class="service_time"
+                placeholder="请输入服务时间，如：周一至周五 14:00-18:00" required>
+        </div>
+        <div class="form">
+            <label for="service_duration" class="label4">服务时长</label>
+            <input type="text" id="service_duration" name="service_duration" class="service_duration"
+                placeholder="请输入服务时长，如：2小时" required>
+        </div>
+        <div class="form">
+            <label for="location" class="label5">服务地点</label>
+            <input type="text" id="location" name="location" class="location" placeholder="请输入服务地点" required>
+        </div>
+        <div class="form">
+            <label for="max_participants" class="label6">最大预约人数</label>
+            <input type="number" id="max_participants" name="max_participants" class="max_participants" min="1"
+                value="1" required>
+        </div>
+        <div class="post_price">
+            <label for="price" class="label7">价格 ￥</label>
+            <input type="text" id="price" name="price" class="price" placeholder="0.00" required>
+        </div>
+        <div class="form">
+            <label for="wechat" class="label8">微信联系方式</label>
+            <input type="text" id="wechat" name="wechat" class="wechat" placeholder="请输入微信号" required>
+        </div>
+        <button type="submit" class="send">发布预约信息</button>
+    </form>
+    {% else %}
+    <div class="login-notice">
+        <p>请先<a href="{% url 'user_center:login' %}?next={{ request.path }}">登录</a>后再发布预约信息</p>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .image-upload-container {
+        border: 2px dashed #ccc;
+        border-radius: 4px;
+        padding: 20px;
+        text-align: center;
+        margin: 10px 0;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+    }
+
+    .image-upload-container:hover {
+        border-color: #666;
+    }
+
+    .cover_image {
+        display: none;
+    }
+
+    .image-preview {
+        margin-top: 10px;
+    }
+
+    .upload-text {
+        color: #666;
+        margin: 0;
+    }
+
+    .label-image {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+</style>
+
+<!-- 引用静态 JavaScript 文件 -->
+<script src="{% static 'js/send_post.js' %}"></script>
+<script>
+    function previewImage(input) {
+        const preview = document.getElementById('preview');
+        const uploadText = document.querySelector('.upload-text');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                uploadText.style.display = 'none';
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // 点击预览区域触发文件选择
+    document.querySelector('.image-upload-container').addEventListener('click', function () {
+        document.getElementById('cover_image').click();
+    });
+
+    // 处理拖放上传
+    const dropZone = document.querySelector('.image-upload-container');
+
+    dropZone.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        this.style.borderColor = '#000';
+    });
+
+    dropZone.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        this.style.borderColor = '#ccc';
+    });
+
+    dropZone.addEventListener('drop', function (e) {
+        e.preventDefault();
+        this.style.borderColor = '#ccc';
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0 && files[0].type.startsWith('image/')) {
+            document.getElementById('cover_image').files = files;
+            previewImage(document.getElementById('cover_image'));
+        }
+    });
+
+    document.getElementById('reservation-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            // 移除 headers，因为 FormData 会自动设置正确的 Content-Type
+            // 并且 CSRF token 已经包含在 FormData 中
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert(data.message);
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('发布失败，请重试');
+            });
+    });
+</script>
+{% endblock %}
